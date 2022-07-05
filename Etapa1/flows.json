@@ -1,0 +1,102 @@
+[
+    {
+        "id": "88df7f8809dc98a9",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "6b44baba.560034",
+        "type": "tcp in",
+        "z": "88df7f8809dc98a9",
+        "name": "Ginlong",
+        "server": "server",
+        "host": "",
+        "port": "9999",
+        "datamode": "stream",
+        "datatype": "buffer",
+        "newline": "",
+        "topic": "ginlong",
+        "base64": false,
+        "tls": "",
+        "x": 270,
+        "y": 120,
+        "wires": [
+            [
+                "513d7a41.3093a4",
+                "5bcf5013eb77c34e"
+            ]
+        ]
+    },
+    {
+        "id": "513d7a41.3093a4",
+        "type": "function",
+        "z": "88df7f8809dc98a9",
+        "name": "Convert datastring",
+        "func": "function hex2a(hexx) {\n    var hex = hexx.toString();//force conversion\n    var str = '';\n    for (var i = 0; (i < hex.length && hex.substr(i, 2) !== '00'); i += 2)\n        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));\n    return str;\n}\n\nvar rawhexdata = msg.payload.toString('hex');\nif (rawhexdata.length == 276) \n{\nvar serial = hex2a(rawhexdata.substr(30,30));\nvar vpv1 = parseInt(((rawhexdata.substr(66,4)).toString(16)), 16)/10;\nvar vpv2 = parseInt(((rawhexdata.substr(70,4)).toString(16)), 16)/10;\nvar vpv3 = parseInt(((rawhexdata.substr(74,4)).toString(16)), 16)/10;\nvar ipv1 = parseInt(((rawhexdata.substr(78,4)).toString(16)), 16)/10;\nvar ipv2 = parseInt(((rawhexdata.substr(82,4)).toString(16)), 16)/10;\nvar ipv3 = parseInt(((rawhexdata.substr(86,4)).toString(16)), 16)/10;\nvar Vac1 = parseInt(((rawhexdata.substr(102,4)).toString(16)), 16)/10;\nvar Vac2 = parseInt(((rawhexdata.substr(106,4)).toString(16)), 16)/10;\nvar Vac3 = parseInt(((rawhexdata.substr(110,4)).toString(16)), 16)/10;\nvar Iac1 = parseInt(((rawhexdata.substr(90,4)).toString(16)), 16)/10;\nvar Iac2 = parseInt(((rawhexdata.substr(94,4)).toString(16)), 16)/10;\nvar Iac3 = parseInt(((rawhexdata.substr(98,4)).toString(16)), 16)/10;\nvar Pac = parseInt(((rawhexdata.substr(118,4)).toString(16)), 16);\nvar Fac = parseInt(((rawhexdata.substr(114,4)).toString(16)), 16)/100;\nvar Temp = parseInt(((rawhexdata.substr(62,4)).toString(16)), 16)/10;\nvar kWhToday = parseInt(((rawhexdata.substr(138,4)).toString(16)), 16)/100;\nvar kWhYesterday = parseInt(((rawhexdata.substr(134,4)).toString(16)), 16)/100;\nvar kWhMonth = parseInt(((rawhexdata.substr(174,4)).toString(16)), 16);\nvar kWhlastMonth = parseInt(((rawhexdata.substr(182,4)).toString(16)), 16);\nvar kWhTotal = parseInt(((rawhexdata.substr(146,4)).toString(16)), 16)/10;\nvar unk1 = parseInt(((rawhexdata.substr(122,4)).toString(16)), 16)/10;\nvar unk2 = parseInt(((rawhexdata.substr(126,4)).toString(16)), 16)/10;\nvar Firmware = parseInt(((rawhexdata.substr(130,4)).toString(16)), 16);\nvar unk3 = parseInt(((rawhexdata.substr(158,4)).toString(16)), 16)/10;\nvar unk4 = parseInt(((rawhexdata.substr(166,4)).toString(16)), 16)/10;\nvar unk5 = parseInt(((rawhexdata.substr(170,4)).toString(16)), 16)/10;\nvar unk6 = parseInt(((rawhexdata.substr(182,4)).toString(16)), 16)/10;\nvar unk7 = parseInt(((rawhexdata.substr(142,4)).toString(16)), 16)/10;\n\nmsg.payload = {\n    serial: serial,\n    vpv1: vpv1,\n    vpv2: vpv2,\n    vpv3: vpv3,\n    Vac1: Vac1,\n    Vac2: Vac2,\n    Vac3: Vac3,\n    Iac1: Iac1,\n    Iac2: Iac2,\n    Iac3: Iac3,\n    Pac: Pac,\n    Fac: Fac,\n    Temp: Temp,\n    kWhToday: kWhToday,\n    kWhYesterday: kWhYesterday,\n    kWhMonth: kWhMonth,\n    kWhlastMonth: kWhlastMonth,\n    kWhTotal: kWhTotal,\n    Firmware: Firmware,\n    unk1: unk1,\n    unk2: unk2,\n    unk3: unk3,\n    unk4: unk4,\n    unk5: unk5,\n    unk6: unk6,\n    unk7: unk7\n    };\n} else\n{\n    msg.payload = \"\";\n}\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 246,
+        "wires": [
+            [
+                "38f302d.f0fb37e"
+            ]
+        ]
+    },
+    {
+        "id": "38f302d.f0fb37e",
+        "type": "file",
+        "z": "88df7f8809dc98a9",
+        "name": "",
+        "filename": "/data/solis.txt",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "false",
+        "x": 882,
+        "y": 346,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d7d247d7002e9291",
+        "type": "debug",
+        "z": "88df7f8809dc98a9",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 770,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "5bcf5013eb77c34e",
+        "type": "function",
+        "z": "88df7f8809dc98a9",
+        "name": "",
+        "func": "function hex2a(hexx) {\n    var hex = hexx.toString();//force conversion\n    var str = '';\n    for (var i = 0; (i < hex.length && hex.substr(i, 2) !== '00'); i += 2)\n        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));\n    return str;\n}\n\nvar rawhexdata = msg.payload.toString('hex');\n\nmsg.payload = rawhexdata;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 120,
+        "wires": [
+            [
+                "d7d247d7002e9291"
+            ]
+        ]
+    }
+]
