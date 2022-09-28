@@ -3,14 +3,17 @@ from base64 import b64encode
 from datetime import datetime
 from urllib import request
 import requests
+import time
 
 from messaging import (
     parse_inverter_message
 )
 
-HOST = "127.0.0.1"
+HOST = "192.168.0.9"
 PORT = 9999
-SERVER_IP = "http://200.126.13.223:3030/api/sensorPanelSolar"
+SERVER_IP = "https://200.126.14.228:5000/api/sensorPanelSolar"
+
+requests.packages.urllib3.disable_warnings()
 
 async def _read_and_log_response(reader, writer):
     buffer_size = 1024
@@ -26,7 +29,7 @@ async def log_and_forward_response(reader, writer):
     if(len(data) == 244):
         inverter_data = parse_inverter_message(data)
         print(inverter_data)
-        requests.post(SERVER_IP, json=inverter_data)
+        requests.post(SERVER_IP, json=inverter_data, verify=False)
 
 
 async def handle_inverter_message(inverter_reader, inverter_writer):
@@ -35,6 +38,7 @@ async def handle_inverter_message(inverter_reader, inverter_writer):
     await log_and_forward_response(server_reader, inverter_writer)
     server_writer.close()
     inverter_writer.close()
+    time.sleep(60)
 
 
 async def main():
